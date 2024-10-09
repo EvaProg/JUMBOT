@@ -106,8 +106,8 @@ def train(config):
     train_bs = data_config["source"]["batch_size"]
     test_bs = data_config["test"]["batch_size"]
 
-    source_list = ['.'+i for i in open(data_config["source"]["list_path"]).readlines()]
-    target_list = ['.'+i for i in open(data_config["target"]["list_path"]).readlines()]
+    source_list = [i for i in open(data_config["source"]["list_path"]).readlines()]
+    target_list = [i for i in open(data_config["target"]["list_path"]).readlines()]
 
     dsets["source"] = ImageList(source_list, \
                                 transform=prep_dict["source"])
