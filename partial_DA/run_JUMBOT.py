@@ -32,7 +32,7 @@ def image_classification(loader, model):
     with torch.no_grad():
         iter_test = iter(loader["test"])
         for i in range(len(loader['test'])):
-            data = next(iter_test)
+            data = iter_test.next()
             inputs = data[0]
             labels = data[1]
             inputs = inputs.cuda()
@@ -140,8 +140,8 @@ def train(args):
         if i % len(dset_loaders["target"]) == 0:
             iter_target = iter(dset_loaders["target"])
 
-        xs, ys = next(iter_source)
-        xt, _ = next(iter_target)
+        xs, ys = iter_source.next()
+        xt, _ = iter_target.next()
         xs, xt, ys = xs.cuda(), xt.cuda(), ys.cuda()
 
         g_xs, f_g_xs = base_network(xs)
