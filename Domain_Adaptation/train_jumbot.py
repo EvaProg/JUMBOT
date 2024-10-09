@@ -321,6 +321,10 @@ if __name__ == "__main__":
     os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu_id
     #os.environ["CUDA_VISIBLE_DEVICES"] = '0,1,2,3'
 
+    #make the paths absolute
+    args.s_dset_path = os.path.abspath(args.s_dset_path)
+    args.t_dset_path = os.path.abspath(args.t_dset_path)
+
     #set seed
     random.seed(args.seed)
     np.random.seed(args.seed)
