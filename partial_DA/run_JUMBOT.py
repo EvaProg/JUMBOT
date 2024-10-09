@@ -111,6 +111,7 @@ def train(args):
     lr_scheduler = lr_schedule.schedule_dict[optimizer_config["lr_type"]]
 
     total_epochs = args.max_iterations // args.test_interval
+    print(f"Total epochs: {total_epochs} - Total iterations: {args.max_iterations}")
 
     for i in range(args.max_iterations + 1):
 
@@ -165,8 +166,15 @@ def train(args):
         transfer_loss = 10. * torch.sum(pi * M)
 
         if i%100==0:
-            print(torch.sum(pi), transfer_loss, torch.min(M), torch.min(M_embed), torch.min(M_sce))
-        
+            print(f"--- Iteration {i} ---")
+            #print(torch.sum(pi), transfer_loss, torch.min(M), torch.min(M_embed), torch.min(M_sce))
+            #clearer printing
+            print("Transport Plan Sum (π): {:.4f}".format(torch.sum(pi).item()))
+            print("Transfer Loss: {:.6f}".format(transfer_loss.detach().cpu().item()))
+            print("Minimum Ground Cost (M): {:.6f}".format(torch.min(M).detach().cpu().item()))
+            print("Minimum Embedding Distance (M_embed): {:.6f}".format(torch.min(M_embed).detach().cpu().item()))
+            print("Minimum Soft Classification Cost (M_sce): {:.6f}".format(torch.min(M_sce).detach().cpu().item()))
+
         total_loss = classifier_loss + transfer_loss 
             
         optimizer.zero_grad()
@@ -175,7 +183,7 @@ def train(args):
 
     torch.save(best_model, os.path.join(args.output_dir, "best_model.pt"))
     
-    log_str = 'Acc: ' + str(np.round(temp_acc*100, 2)) + '\n'
+    log_str = 'Final Model Accuracy: ' + str(np.round(temp_acc*100, 2)) + '\n'
     args.out_file.write(log_str)
     args.out_file.flush()
     print(log_str)
