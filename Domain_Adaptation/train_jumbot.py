@@ -106,8 +106,12 @@ def train(config):
     train_bs = data_config["source"]["batch_size"]
     test_bs = data_config["test"]["batch_size"]
 
-    source_list = [i for i in open(data_config["source"]["list_path"]).readlines()]
-    target_list = [i for i in open(data_config["target"]["list_path"]).readlines()]
+    try:
+        source_list = [i for i in open(data_config["source"]["list_path"]).readlines()]
+        target_list = [i for i in open(data_config["target"]["list_path"]).readlines()]
+    except FileNotFoundError as e:
+        print(f"File not found: {e}. Please check your dataset paths.")
+        return
 
     dsets["source"] = ImageList(source_list, \
                                 transform=prep_dict["source"])
@@ -198,11 +202,13 @@ def train(config):
     best_acc = 0.0
     loss_value = 0
     for i in tqdm(range(config["num_iterations"]), total=config["num_iterations"]):
+        print(f"Training iteration {i+1}/{config['num_iterations']}")
         if i % config["test_interval"] == config["test_interval"]-1:
             base_network.train(False)
             temp_acc = image_classification_test(dset_loaders, \
                 base_network, test_10crop=prep_config["test_10crop"])
             temp_model = base_network #nn.Sequential(base_network)
+            print(f"Iteration {i}, test accuracy: {temp_acc:.4f}")
             if temp_acc > best_acc:
                 best_step = i
                 best_acc = temp_acc
@@ -210,6 +216,7 @@ def train(config):
                 checkpoint = {"base_network": best_model.state_dict()}
                 torch.save(checkpoint, osp.join(config["output_path"], "best_model.pth"))
                 print("\n##########     save the best model.    #############\n")
+                print(f"New best model saved with accuracy: {best_acc:.4f}")
             log_str = "iter: {:05d}, precision: {:.5f}".format(i, temp_acc)
             config["out_file"].write(log_str+"\n")
             config["out_file"].flush()
@@ -250,8 +257,12 @@ def train(config):
             iter_source = iter(dset_loaders["source"])
         if i % len_train_target == 0:
             iter_target = iter(dset_loaders["target"])
-        xs, ys = iter_source.next()  # source minibatch
-        xt, _ = iter_target.next()  # target minibatch
+        try:
+            xs, ys = next(iter_source)
+            xt, _ = next(iter_target)
+        except FileNotFoundError as e:
+            print(f"Image not found during training: {e}")
+            continue
         xs, xt, ys = Variable(xs).cuda(), Variable(xt).cuda(), Variable(ys).cuda()
         
         g_xs, f_g_xs = base_network(xs)  # source embedded data
