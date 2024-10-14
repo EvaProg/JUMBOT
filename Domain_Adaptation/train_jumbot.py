@@ -338,7 +338,7 @@ if __name__ == "__main__":
     config['args'] = args
     config['method'] = args.method
     config["gpu"] = args.gpu_id
-    config["num_iterations"] = 100004
+    config["num_iterations"] = 1000
     config["test_interval"] = args.test_interval
     config["snapshot_interval"] = args.snapshot_interval
     config["output_for_test"] = True
@@ -419,7 +419,7 @@ if __name__ == "__main__":
     config["threshold"] = args.threshold
     config["label_interval"] = args.label_interval
     if args.stop_step == 0:
-        config["stop_step"] = 10000
+        config["stop_step"] = 1000
     else:
         config["stop_step"] = args.stop_step
     if args.final_log is None:
