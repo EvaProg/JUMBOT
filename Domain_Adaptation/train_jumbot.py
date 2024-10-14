@@ -28,9 +28,9 @@ def image_classification_test(loader, model, test_10crop=True):
     dataset = loader['test']
     with torch.no_grad():
         if test_10crop:
-            iter_test = [iter(dataset[i][1:] if dataset[i].startswith('.') else dataset[i]) for i in range(10)]
+            iter_test = [iter(dataset[i]) for i in range(10)]
             for i in range(len(dataset[0])):
-                data = [iter_test[j].next() for j in range(10)]
+                data = [iter_test[j].next()[1:] if iter_test[j].next().startswith('.') else iter_test[j].next() for j in range(10)]
                 inputs = [data[j][0] for j in range(10)]
                 labels = data[0][1]
                 for j in range(10):
