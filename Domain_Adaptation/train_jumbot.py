@@ -402,6 +402,9 @@ if __name__ == "__main__":
         config["optimizer"]["lr_param"]["lr"] = 0.001 # optimal parameters
         config["network"]["params"]["class_num"] = 12
         #config['loss']["trade_off"] = 1.0
+    elif config["dataset"] == "covid":
+        config["optimizer"]["lr_param"]["lr"] = 0.001
+        config["network"]["params"]["class_num"] = 2
     else:
         raise ValueError('Dataset has not been implemented.')
     if args.lr != 0.001:
