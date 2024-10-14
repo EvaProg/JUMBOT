@@ -28,7 +28,7 @@ def image_classification_test(loader, model, test_10crop=True):
     dataset = loader['test']
     with torch.no_grad():
         if test_10crop:
-            iter_test = [iter(dataset[i]) for i in range(10)]
+            iter_test = [iter(dataset[i][1:] if dataset[i].startswith('.') else dataset[i]) for i in range(10)]
             for i in range(len(dataset[0])):
                 data = [iter_test[j].next() for j in range(10)]
                 inputs = [data[j][0] for j in range(10)]
@@ -349,7 +349,7 @@ if __name__ == "__main__":
     config['args'] = args
     config['method'] = args.method
     config["gpu"] = args.gpu_id
-    config["num_iterations"] = 1000
+    config["num_iterations"] = 500
     config["test_interval"] = args.test_interval
     config["snapshot_interval"] = args.snapshot_interval
     config["output_for_test"] = True
