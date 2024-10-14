@@ -367,6 +367,10 @@ if __name__ == "__main__":
             config["network"] = {"name":net, \
                 "params":{"resnet_name":args.net, "use_bottleneck":True, "bottleneck_dim":256,
                           "new_cls":True, "cos_dist":args.cos_dist} }
+        elif args.dset == "covid":
+            config["network"] = {"name":net, \
+                "params":{"resnet_name":args.net, "use_bottleneck":True, "bottleneck_dim":256,
+                          "new_cls":True, "cos_dist":args.cos_dist} }
             
     elif "VGG" in args.net:
         config["network"] = {"name":network.VGGFc, \
