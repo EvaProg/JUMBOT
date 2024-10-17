@@ -272,9 +272,10 @@ def train(config):
         classifier_loss = criterion(f_g_xs, ys)
 
         ys = F.one_hot(ys, num_classes=class_num).float()  # Get One Hot probability vectors
-
+        print(f"Embedding sizes: {g_xs.size()}, {g_xt.size()}")
         M_embed = torch.cdist(g_xs, g_xt)**2  # Term on embedded data 
         M_sce = - torch.mm(ys, torch.transpose(torch.log(pred_xt), 0, 1))  # Term on labels
+        print(f"M_embed size: {M_embed.size()}, M_sce size: {M_sce.size()}")
         M = alpha * M_embed + lambda_t * M_sce  # Ground cost
 
         #OT computation
